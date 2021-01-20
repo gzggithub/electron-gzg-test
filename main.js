@@ -13,18 +13,17 @@ function createWindow () {
       enableRemoteModule: true, // 开启remote
     },
     icon: path.join(__dirname, './favicon.ico'), // 设置图标
-    show: false,
     fullscreen: false, // 全屏设置
   })
   // var menu = Menu.buildFromTemplate(null)
   // Menu.setApplicationMenu(menu)
 
   // win.loadFile('index.html')
-  win.maximize()
-  win.show()
   // win.loadURL('https://github.com')
   // win.loadURL('https://www.baidu.com/')
   win.loadURL('http://192.168.0.248:9530/')
+  win.maximize()
+  // win.show()
   // fs.writeFileSync('./test' + (Math.random()*100) +'.txt', '好好学习天天向上')
   // fs.writeFileSync('./test.txt', '好好学习天天向上')
   // fs.readFile('./test.txt', 'UTF-8', (err, data)=>{
@@ -46,7 +45,7 @@ function createWindow () {
   // })
 }
 // const menu = Menu.buildFromTemplate([])
-// Menu.setApplicationMenu(menu)
+// Menu.setApplicationMenu(null)
 
 app.whenReady().then(createWindow)
 
@@ -55,19 +54,19 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-app.on('closed', () => {
-  if (process.platform !== 'darwin') {
-    dialog.showMessageBox({
-      title: '友情提示',
-      message: '确定要关闭吗？'
-    }).then((res) => {
-      console.log(res)
-      // app.quit()
-    }).catch((req) => {
-      console.log(req)
-    })
-  }
-})
+// app.on('closed', () => {
+//   if (process.platform !== 'darwin') {
+//     dialog.showMessageBox({
+//       title: '友情提示',
+//       message: '确定要关闭吗？'
+//     }).then((res) => {
+//       console.log(res)
+//       // app.quit()
+//     }).catch((req) => {
+//       console.log(req)
+//     })
+//   }
+// })
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
