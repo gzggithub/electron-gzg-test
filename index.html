@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <title>金安易</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
 </head>
 <body style="background: white;">
-    <!-- <web-view src="http://192.168.0.248:8891/"></web-view> -->
-    <!-- <iframe src="http://192.168.0.248:8891"></iframe> -->
-    <!-- <iframe src="https://www.baidu.com/" frameborder="0" width="100%" height="600px"></iframe> -->
-    <button id="savetxt">savetxt</button>
-    <button id="gettxt">gettxt</button>
+  <!-- <webview id="foo" src="https://www.baidu.com/"></webview> -->
+  <!-- <web-view src="http://192.168.0.248:8891/"></web-view> -->
+  <!-- <iframe src="http://192.168.0.248:8891"></iframe> -->
+  <iframe src="https://www.baidu.com/" frameborder="0" width="100%" height="calc(100%)"></iframe>
+  <!-- <button id="savetxt">savetxt</button>
+  <button id="gettxt">gettxt</button> -->
 <script>
   require('./renderer.js')
+  //创建 client
+  // require('electron-connect').client.create();
+  console.log(123)
 </script>
 </body>
 </html>

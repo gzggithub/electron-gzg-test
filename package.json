@@ -5,6 +5,7 @@
   "description": "My Electron app",
   "main": "main.js",
   "scripts": {
+    "hot":".\\node_modules\\.bin\\gulp watch:electron",
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
@@ -21,7 +22,9 @@
     "electron": "^11.2.0"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-connect": "^0.6.3",
+    "electron-squirrel-startup": "^1.0.0",
+    "gulp": "^4.0.2"
   },
   "config": {
     "forge": {
