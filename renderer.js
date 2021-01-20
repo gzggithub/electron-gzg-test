@@ -22,6 +22,10 @@ gettxt.onclick = function(e) {
       console.log(data, 'err data')
       alert(data)
       // event.sender.send('asynchronous-reply', data);
+      // dialog.showMessageBoxSync({
+      //   title: '读取文件',
+      //   message: data
+      // })
     }    
   })
   // const root = fs.readdirSync('/') // 读取当前项目文件所在目录文件
