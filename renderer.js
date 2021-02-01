@@ -14,32 +14,53 @@ let gettxt = document.querySelector('#gettxt');
 fs.writeFileSync('./test.txt', '好好学习天天向上')
 
 gettxt.onclick = function(e) {
-  fs.readFile('./test.txt', 'UTF-8', (err, data)=>{
-    if(err){
-      console.log(err, 'err')
-      // event.sender.send('asynchronous-reply', "读取失败");
-    }else{
-      console.log(data, 'err data')
-      alert(data)
-      // event.sender.send('asynchronous-reply', data);
-      // dialog.showMessageBoxSync({
-      //   title: '读取文件',
-      //   message: data
-      // })
-    }    
-  })
-  // const root = fs.readdirSync('/') // 读取当前项目文件所在目录文件
-  // console.log(root)
-  // fs.writeFileSync('./test.txt', '好好学习天天向上')
-  // fs.writeFileSync(path.join(__dirname, "./test.txt"), '好好学习天天向上')
-  // fs.writeFile(path.join(__dirname, "../test.txt"), '好好学习天天向上')
-  // dialog.showSaveDialog({
-  //   title:'保存文件',
-  //   // defaultPath: '' // 默认地址
-  // }).then((res)=>{
-  //   console.log(res)
-  //   fs.writeFileSync(res.filePath, '好好学习天天向上')
-  // }).catch((req)=>{
-  //   console.log(req)
+  let data = JSON.parse(fs.readFileSync('config.json', 'utf-8'))
+  console.log(data, 'data')
+  window.location.href = data.url
+  // fs.readFile('./config.js', 'UTF-8', (err, data)=>{
+  //   if (err) {
+  //     console.log(err, 'err')
+  //     // event.sender.send('asynchronous-reply', "读取失败");
+  //   } else {
+  //     console.log(data, 'err data')
+  //     alert(data)
+  //     // event.sender.send('asynchronous-reply', data);
+  //     // dialog.showMessageBoxSync({
+  //     //   title: '读取文件',
+  //     //   message: data
+  //     // })
+  //     // window.location.href = 'http://192.168.0.248:9530/'
+  //   }    
   // })
 }
+
+// gettxt.onclick = function(e) {
+//   fs.readFile('./test.txt', 'UTF-8', (err, data)=>{
+//     if(err){
+//       console.log(err, 'err')
+//       // event.sender.send('asynchronous-reply', "读取失败");
+//     }else{
+//       console.log(data, 'err data')
+//       alert(data)
+//       // event.sender.send('asynchronous-reply', data);
+//       // dialog.showMessageBoxSync({
+//       //   title: '读取文件',
+//       //   message: data
+//       // })
+//     }    
+//   })
+//   // const root = fs.readdirSync('/') // 读取当前项目文件所在目录文件
+//   // console.log(root)
+//   // fs.writeFileSync('./test.txt', '好好学习天天向上')
+//   // fs.writeFileSync(path.join(__dirname, "./test.txt"), '好好学习天天向上')
+//   // fs.writeFile(path.join(__dirname, "../test.txt"), '好好学习天天向上')
+//   // dialog.showSaveDialog({
+//   //   title:'保存文件',
+//   //   // defaultPath: '' // 默认地址
+//   // }).then((res)=>{
+//   //   console.log(res)
+//   //   fs.writeFileSync(res.filePath, '好好学习天天向上')
+//   // }).catch((req)=>{
+//   //   console.log(req)
+//   // })
+// }

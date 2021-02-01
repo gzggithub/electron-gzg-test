@@ -18,10 +18,10 @@ function createWindow () {
   // var menu = Menu.buildFromTemplate(null)
   // Menu.setApplicationMenu(menu)
 
-  // win.loadFile('index.html')
+  win.loadFile('index.html')
   // win.loadURL('https://github.com')
   // win.loadURL('https://www.baidu.com/')
-  win.loadURL('http://192.168.0.248:9530/')
+  // win.loadURL('http://192.168.0.248:9530/')
   win.maximize()
   // win.show()
   // fs.writeFileSync('./test' + (Math.random()*100) +'.txt', '好好学习天天向上')
