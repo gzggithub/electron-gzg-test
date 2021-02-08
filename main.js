@@ -1,75 +1,243 @@
 // 主进程
-const { app, BrowserWindow, Menu, dialog } = require('electron')
-const fs = require('fs')
+const { app, BrowserWindow, Menu, MenuItem, shell, dialog } = require('electron')
+// const app = electron.app
+// const BrowserWindow = electron.BrowserWindow
+// const Menu = electron.Menu
 const path = require('path')
+if (process.mas) app.setName('Your Electron App Name')
+
+let mainWindow
 
 function createWindow () {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true, // 在主进程中允许集成nodejs
-      // 注意: electron v10.0.0版本之后, remote默认不会开启, 需在BrowserWindow的配置处增加如下: 
-      enableRemoteModule: true, // 开启remote
-    },
-    icon: path.join(__dirname, './favicon.ico'), // 设置图标
-    fullscreen: false, // 全屏设置
+  let windowOptions = {
+    width: 1220,
+    height: 780,
+    minWidth: 1220,
+    minHeight: 780,
+    title: app.getName()
+  }
+
+  if (process.platform === 'linux') {
+    windowOptions.icon = path.join(__dirname, '/app/ico/your-ico.png')
+  }
+
+  mainWindow = new BrowserWindow(windowOptions);
+  mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
+
+  mainWindow.on('closed', function () {
+    mainWindow = null
   })
-  // var menu = Menu.buildFromTemplate(null)
-  // Menu.setApplicationMenu(menu)
-
-  win.loadFile('index.html')
-  // win.loadURL('https://github.com')
-  // win.loadURL('https://www.baidu.com/')
-  // win.loadURL('http://192.168.0.248:9530/')
-  win.maximize()
-  // win.show()
-  // fs.writeFileSync('./test' + (Math.random()*100) +'.txt', '好好学习天天向上')
-  // fs.writeFileSync('./test.txt', '好好学习天天向上')
-  // fs.readFile('./test.txt', 'UTF-8', (err, data)=>{
-  // 	if(err){
-  //     console.log(err, 'err')
-  //     // event.sender.send('asynchronous-reply', "读取失败");
-  //   }else{
-  //     console.log(data, 'err data')
-  //     alert(data)
-  //     // event.sender.send('asynchronous-reply', data);
-  //   }    
-  // })
-  // fs.readFile(path.join(__dirname,'./test.txt'), 'utf8',(err, data)=>{
-  // 	if(err){
-  //     event.sender.send('asynchronous-reply', "读取失败");
-  //   }else{
-  //     event.sender.send('asynchronous-reply', data);
-  //   }    
-  // })
 }
-// const menu = Menu.buildFromTemplate([])
-// Menu.setApplicationMenu(null)
 
-app.whenReady().then(createWindow)
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+app.on('ready', function() {
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu) // 设置菜单部分
+  createWindow()
 })
-// app.on('closed', () => {
-//   if (process.platform !== 'darwin') {
-//     dialog.showMessageBox({
-//       title: '友情提示',
-//       message: '确定要关闭吗？'
-//     }).then((res) => {
-//       console.log(res)
-//       // app.quit()
-//     }).catch((req) => {
-//       console.log(req)
-//     })
-//   }
-// })
 
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit()
 })
+
+app.on('activate', function () {
+  if (mainWindow === null) createWindow()
+})
+
+app.on('browser-window-created', function () {
+  let reopenMenuItem = findReopenMenuItem()
+  if (reopenMenuItem) reopenMenuItem.enabled = false
+})
+
+app.on('window-all-closed', function () {
+  let reopenMenuItem = findReopenMenuItem()
+  if (reopenMenuItem) reopenMenuItem.enabled = true
+  app.quit()
+})
+
+
+/**
+ * 注册键盘快捷键
+ * 其中：label: '切换开发者工具',这个可以在发布时注释掉
+ */
+let template = [
+  {
+    label: '操作',
+    submenu: [
+      {
+        label: '复制',
+        accelerator: 'CmdOrCtrl+C',
+        role: 'copy'
+      },
+      {
+        label: '粘贴',
+        accelerator: 'CmdOrCtrl+V',
+        role: 'paste'
+      },
+      {
+        label: '重新加载',
+        accelerator: 'CmdOrCtrl+R',
+        click: function (item, focusedWindow) {
+          if (focusedWindow) {
+            // on reload, start fresh and close any old
+            // open secondary windows
+            if (focusedWindow.id === 1) {
+              BrowserWindow.getAllWindows().forEach(function (win) {
+                if (win.id > 1) {
+                  win.close()
+                }
+              })
+            }
+            focusedWindow.reload()
+          }
+        }
+      },
+      {
+        label: '修改地址',
+        // accelerator: 'CmdOrCtrl+R',
+        click: function (item, focusedWindow) {
+          // console.log(item)
+          // console.log(focusedWindow)
+          console.log(123123)
+          // dialog.showOpenDialogSync(mainWindow, {
+          //   properties: ['openFile', 'openDirectory']
+          // })
+          dialog.showMessageBoxSync(mainWindow)
+        }
+      }
+    ]
+  },
+  {
+    label: '窗口',
+    role: 'window',
+    submenu: [
+      {
+        label: '最小化',
+        accelerator: 'CmdOrCtrl+M',
+        role: 'minimize'
+      },
+      {
+        label: '关闭',
+        accelerator: 'CmdOrCtrl+W',
+        role: 'close'
+      },
+      {
+        label: '切换开发者工具',
+        accelerator: (function () {
+          if (process.platform === 'darwin') {
+            return 'Alt+Command+I'
+          } else {
+            return 'Ctrl+Shift+I'
+          }
+        })(),
+        click: function (item, focusedWindow) {
+          if (focusedWindow) {
+            focusedWindow.toggleDevTools()
+          }
+        }
+      },
+      {
+        type: 'separator'
+      }
+    ]
+  },
+  {
+    label: '帮助',
+    role: 'help',
+    submenu: [
+      {
+        label: '意见反馈',
+        click: function () {
+          shell.openExternal('https://forum.iptchain.net')
+        }
+      }
+    ]
+  }
+]
+
+/**
+ * 增加更新相关的菜单选项
+ */
+function addUpdateMenuItems (items, position) {
+  if (process.mas) return
+
+  const version = app.getVersion()
+  let updateItems = [
+    {
+      label: `Version ${version}`,
+      enabled: false
+    },
+    {
+      label: 'Checking for Update',
+      enabled: false,
+      key: 'checkingForUpdate'
+    },
+    {
+      label: 'Check for Update',
+      visible: false,
+      key: 'checkForUpdate',
+      click: function () {
+          require('electron').autoUpdater.checkForUpdates()
+      }
+    },
+    {
+      label: 'Restart and Install Update',
+      enabled: true,
+      visible: false,
+      key: 'restartToUpdate',
+      click: function () {
+        require('electron').autoUpdater.quitAndInstall()
+      }
+    }
+  ]
+  items.splice.apply(items, [position, 0].concat(updateItems))
+}
+
+function findReopenMenuItem () {
+  const menu = Menu.getApplicationMenu()
+  if (!menu) return
+
+  let reopenMenuItem
+  menu.items.forEach(function (item) {
+    if (item.submenu) {
+      item.submenu.items.forEach(function (item) {
+        if (item.key === 'reopenMenuItem') {
+          reopenMenuItem = item
+        }
+      })
+    }
+  })
+  return reopenMenuItem
+}
+
+// 针对Mac端的一些配置
+if (process.platform === 'darwin') {
+  const name = app.getName()
+  template.unshift({
+    label: name,
+    submenu: [
+      {
+        label: 'Quit ( 退出 )',
+        accelerator: 'Command+Q',
+        click: function () {
+          app.quit()
+        }
+      }
+    ]
+  })
+
+  // Window menu.
+  template[3].submenu.push({
+      type: 'separator'
+  }, {
+      label: 'Bring All to Front',
+      role: 'front'
+  })
+
+  addUpdateMenuItems(template[0].submenu, 1)
+}
+
+// 针对Windows端的一些配置
+if (process.platform === 'win32') {
+  const helpMenu = template[template.length - 1].submenu
+  addUpdateMenuItems(helpMenu, 0)
+}
